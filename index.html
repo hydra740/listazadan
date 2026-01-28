@@ -289,34 +289,34 @@
 </script>
 
 </body>
-<!-- Modernistyczny, lekko czarnawy napis -->
-<div class="made-by">Aleks Skrzypiński</div>
+<!-- Modernistyczny, lekko czarnawy napis z prawami autorskimi -->
+<div class="made-by">© 2026 Aleks Skrzypiński</div>
 
 <style>
 .made-by {
     text-align: center;
     font-family: 'Arial Black', sans-serif;
-    font-size: 1.4rem;
-    background: linear-gradient(90deg, #222222, #555555); /* ciemnoszary gradient */
+    font-size: 1rem; /* zmniejszyłem z 1.4rem */
+    background: linear-gradient(90deg, #222222, #555555);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     position: relative;
     margin-top: 40px;
-    filter: drop-shadow(0 0 4px #888)  /* delikatne podświetlenie */
-            drop-shadow(0 0 8px #666);
+    filter: drop-shadow(0 0 3px #888) drop-shadow(0 0 6px #666); /* delikatniejsze podświetlenie */
     animation: glow 2s infinite alternate;
 }
 
 @keyframes glow {
     0% {
-        filter: drop-shadow(0 0 2px #888)
-                drop-shadow(0 0 4px #666);
+        filter: drop-shadow(0 0 1px #888)
+                drop-shadow(0 0 3px #666);
     }
     100% {
-        filter: drop-shadow(0 0 6px #aaa)
-                drop-shadow(0 0 12px #888);
+        filter: drop-shadow(0 0 4px #aaa)
+                drop-shadow(0 0 8px #888);
     }
 }
 </style>
 
 </html>
+
