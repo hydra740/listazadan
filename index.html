@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192x192.png" type="image/png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lista zadań + Plan tygodnia + Lekcje</title>
+<title>Lista zadań</title>
 <style>
 body {
     margin: 0;
@@ -28,7 +30,6 @@ body::after {
     z-index: 10;
 }
 
-/* Kontenery */
 .container {
     display: flex;
     gap: 20px;
@@ -36,7 +37,7 @@ body::after {
     width: 100%;
 }
 
-/* Plan lekcji po lewej */
+/* Lewa kolumna: plan lekcji */
 .lesson-plan {
     background: rgba(30,30,30,0.9);
     backdrop-filter: blur(10px);
@@ -48,19 +49,15 @@ body::after {
     overflow-y: auto;
 }
 .lesson-plan h2 {text-align:center; margin-top:0; margin-bottom:15px;}
-.lesson-day {
-    margin-bottom: 15px;
-}
+.lesson-day {margin-bottom: 15px;}
 .lesson-day strong {display:block; margin-bottom:5px; font-size:15px;}
 .lesson-subject {padding:6px 10px; background:#222; border-radius:8px; margin-bottom:3px; font-size:14px;}
+.lesson-filters {text-align:center; margin-bottom:15px;}
+.lesson-filters button {padding:6px 12px; border-radius:10px; background:#444; border:none; color:white; cursor:pointer; margin:0 5px;}
+.lesson-filters button:hover { background:#666; }
 
 /* Prawa kolumna: lista zadań + plan tygodnia */
-.right-panel {
-    display: flex;
-    flex-direction: column;
-    gap:20px;
-    flex:1;
-}
+.right-panel { display:flex; flex-direction:column; gap:20px; flex:1; }
 
 /* Lista zadań */
 .todo {
@@ -73,35 +70,11 @@ body::after {
     max-height: 50vh;
     overflow-y: auto;
 }
-.date {
-    text-align: center;
-    font-size: 14px;
-    color: #aaa;
-    margin-bottom: 10px;
-}
+.date {text-align:center; font-size:14px; color:#aaa; margin-bottom:10px;}
 h3 {text-align:center; margin-top:0; margin-bottom:10px;}
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    background: #222;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-    transition: box-shadow .2s;
-}
-input:focus { box-shadow: 0 0 0 2px #555; }
-.add-btn {
-    width:100%;
-    margin-top:10px;
-    padding:10px;
-    background:linear-gradient(135deg,#444,#222);
-    border:none;
-    border-radius:12px;
-    color:white;
-    cursor:pointer;
-    transition:transform .2s,box-shadow .2s;
-}
+input[type="text"] {width:100%; padding:10px; background:#222; color:white; border:none; border-radius:10px; outline:none; transition:box-shadow .2s;}
+input:focus { box-shadow:0 0 0 2px #555; }
+.add-btn {width:100%; margin-top:10px; padding:10px; background:linear-gradient(135deg,#444,#222); border:none; border-radius:12px; color:white; cursor:pointer; transition:transform .2s,box-shadow .2s;}
 .add-btn:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(0,0,0,.6); }
 ul { list-style:none; padding:0; margin-top:20px; }
 li { display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#2b2b2b,#1f1f1f); padding:10px; margin-bottom:10px; border-radius:14px; transition:transform .25s ease, box-shadow .25s ease;}
@@ -124,19 +97,17 @@ li span { flex:1; }
 .week-plan h3 {margin-top:0; margin-bottom:15px;}
 .week-day {padding:8px; background:#222; border-radius:10px; margin-bottom:10px;}
 .week-day span {display:block; font-size:14px;}
+.week-day.today { background: #444 !important; }
+.week-day.warning span.countdown { color: #ff6b6b; font-weight:bold; }
+.week-day.late span.countdown { color: #ff0000; font-weight:bold; }
+
+/* Przyciski dla planu tygodnia */
+.week-filters {text-align:center; margin-bottom:10px;}
+.week-filters button {padding:6px 12px; border-radius:10px; background:#444; border:none; color:white; cursor:pointer; margin:0 5px;}
+.week-filters button:hover {background:#666;}
 
 /* Napis pod listą zadań */
-.made-by {
-    text-align:center;
-    font-family: 'Arial Black',sans-serif;
-    font-size:1rem;
-    background:linear-gradient(90deg,#222,#555);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    margin:20px auto 0 auto;
-    filter:drop-shadow(0 0 3px #888) drop-shadow(0 0 6px #666);
-    animation: glow 2s infinite alternate;
-}
+.made-by {text-align:center; font-family:'Arial Black',sans-serif; font-size:1rem; background:linear-gradient(90deg,#222,#555); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin:20px auto 0 auto; filter:drop-shadow(0 0 3px #888) drop-shadow(0 0 6px #666); animation: glow 2s infinite alternate;}
 @keyframes glow { 0% {filter:drop-shadow(0 0 1px #888) drop-shadow(0 0 3px #666);} 100% {filter:drop-shadow(0 0 4px #aaa) drop-shadow(0 0 8px #888);} }
 </style>
 </head>
@@ -145,7 +116,11 @@ li span { flex:1; }
 <div class="container">
   <!-- Lewa kolumna: plan lekcji 12 -->
   <div class="lesson-plan">
-    <h2>Plan lekcji 6A</h2>
+    <h2>Plan lekcji 12</h2>
+    <div class="lesson-filters">
+      <button onclick="showTodayLessons()">Tylko dzisiaj</button>
+      <button onclick="showAllLessons()">Cały tydzień</button>
+    </div>
 
     <div class="lesson-day">
       <strong>Poniedziałek</strong>
@@ -155,14 +130,12 @@ li span { flex:1; }
       <div class="lesson-subject">11:45 - 12:30 Plastyka</div>
       <div class="lesson-subject">12:45 - 13:30 Muzyka</div>
     </div>
-
     <div class="lesson-day">
       <strong>Wtorek</strong>
       <div class="lesson-subject">09:50 - 10:35 Wychowanie fizyczne</div>
       <div class="lesson-subject">10:45 - 11:30 Język angielski</div>
       <div class="lesson-subject">11:45 - 12:30 Język polski</div>
     </div>
-
     <div class="lesson-day">
       <strong>Środa</strong>
       <div class="lesson-subject">08:00 - 08:45 Język angielski</div>
@@ -173,7 +146,6 @@ li span { flex:1; }
       <div class="lesson-subject">12:45 - 13:30 Technika</div>
       <div class="lesson-subject">13:45 - 14:30 Matematyka</div>
     </div>
-
     <div class="lesson-day">
       <strong>Czwartek</strong>
       <div class="lesson-subject">08:55 - 09:40 Religia</div>
@@ -185,7 +157,6 @@ li span { flex:1; }
       <div class="lesson-subject">14:35 - 15:20 Wychowanie fizyczne</div>
       <div class="lesson-subject">15:25 - 16:10 Wychowanie fizyczne</div>
     </div>
-
     <div class="lesson-day">
       <strong>Piątek</strong>
       <div class="lesson-subject">09:50 - 10:35 Język polski</div>
@@ -207,6 +178,10 @@ li span { flex:1; }
 
     <div class="week-plan">
       <h3>Plan tygodnia</h3>
+      <div class="week-filters">
+        <button onclick="showTodayWeek()">Tylko dzisiaj</button>
+        <button onclick="showAllWeek()">Cały tydzień</button>
+      </div>
       <div class="week-day" id="mon"><strong>Poniedziałek</strong><span>Wyjście: 8:30</span><span class="countdown"></span></div>
       <div class="week-day" id="tue"><strong>Wtorek</strong><span>Wyjście: 9:30</span><span class="countdown"></span></div>
       <div class="week-day" id="wed"><strong>Środa</strong><span>Wyjście: 7:40</span><span class="countdown"></span></div>
@@ -257,25 +232,72 @@ const plan = [
 
 function updateCountdowns(){
     const now = new Date();
-    plan.forEach(item=>{
-        const elem = document.getElementById(item.id).querySelector(".countdown");
+    const todayNum = now.getDay(); // 0-niedziela
+    const dayMapRev = {1:"mon",2:"tue",3:"wed",4:"thu",5:"fri"};
+
+    Object.keys(dayMapRev).forEach(d => {
+        const id = dayMapRev[d];
+        const elem = document.getElementById(id);
+        const countdown = elem.querySelector(".countdown");
         let next = new Date(now);
-        next.setHours(item.hour, item.min,0,0);
-        const today = now.getDay(); 
-        const targetDay = {"mon":1,"tue":2,"wed":3,"thu":4,"fri":5}[item.id];
-        const diffDays = (targetDay - today + 7) % 7;
+        next.setHours(plan.find(p=>p.id===id).hour, plan.find(p=>p.id===id).min,0,0);
+        const targetDayNum = parseInt(d);
+        const diffDays = (targetDayNum - todayNum + 7) % 7;
         next.setDate(now.getDate() + diffDays);
+
         const diffMs = next - now;
-        const diffMin = Math.floor(diffMs/60000);
+        const diffMin = Math.floor(diffMs / 60000);
+
+        elem.classList.remove("today","warning","late");
+        if(todayNum === targetDayNum){
+            elem.classList.add("today");
+        }
+
         if(diffMin > 0){
             const hours = Math.floor(diffMin/60);
-            const minutes = diffMin%60;
-            elem.textContent = `Za ${hours>0?hours+"h ":""}${minutes}min muszę wychodzić`;
-        } else { elem.textContent = "Już powinieneś wyjść!"; }
+            const minutes = diffMin % 60;
+            countdown.textContent = `Za ${hours>0?hours+"h ":""}${minutes}min muszę wychodzić`;
+            if(diffMin <= 10){
+                elem.classList.add("warning");
+            }
+        } else {
+            countdown.textContent = "Już powinieneś wyjść!";
+            elem.classList.add("late");
+        }
     });
 }
 setInterval(updateCountdowns,1000);
 updateCountdowns();
+
+// --- Filtry plan lekcji ---
+function showTodayLessons(){
+    const lessonDays = document.querySelectorAll(".lesson-day");
+    const today = new Date().getDay();
+    const dayMap = {"Poniedziałek":1,"Wtorek":2,"Środa":3,"Czwartek":4,"Piątek":5};
+    lessonDays.forEach(day => {
+        const dayName = day.querySelector("strong").textContent;
+        day.style.display = (dayMap[dayName]===today)? "block" : "none";
+    });
+}
+function showAllLessons(){
+    const lessonDays = document.querySelectorAll(".lesson-day");
+    lessonDays.forEach(day => day.style.display = "block");
+}
+
+// --- Filtry plan tygodnia ---
+function showTodayWeek(){
+    const weekDays = document.querySelectorAll(".week-day");
+    const today = new Date().getDay();
+    const dayMap = {1:"mon",2:"tue",3:"wed",4:"thu",5:"fri"};
+    weekDays.forEach(day => {
+        const id = day.id;
+        day.style.display = (dayMap[today]===id)? "block" : "none";
+    });
+}
+function showAllWeek(){
+    const weekDays = document.querySelectorAll(".week-day");
+    weekDays.forEach(day => day.style.display = "block");
+}
 </script>
 </body>
 </html>

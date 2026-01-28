@@ -1,13 +1,22 @@
 {
-    "name": "Lista zadań",
-    "short_name": "Todo",
+    "name": "Lista zadań i plan tygodnia",
+    "short_name": "PlanZadan",
+    "description": "Twoja aplikacja z listą zadań i planem lekcji",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#0b0b0b",
-    "theme_color": "#0b0b0b",
+    "theme_color": "#1a1a1a",
     "icons": [
-      { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-      { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+      {
+        "src": "icons/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "icons/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
     ]
   }
   
